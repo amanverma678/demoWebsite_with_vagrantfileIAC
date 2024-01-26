@@ -32,12 +32,12 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-   config.vm.network "private_network", ip: "192.168.56.22"
+  config.vm.network "private_network", ip: "192.168.56.25"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-   config.vm.network "public_network"
+  # config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -61,7 +61,7 @@ Vagrant.configure("2") do |config|
   #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
-     vb.memory = "1024"
+    vb.memory = "1600"
    end
   #
   # View the documentation for the provider you are using for more
@@ -71,6 +71,16 @@ Vagrant.configure("2") do |config|
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     yum install httpd -y
+    yum install httpd wget unzip zip -y
+    systemctl start httpd 
+    systemctl enabled httpd
+    mkdir -p /tmp/baristacafe
+    cd /tmp/baristacafe
+    wget https://www.tooplate.com/zip-templates/2137_barista_cafe.zip
+    unzip -o 2137_barista_cafe.zip
+    cp -r 2137_barista_cafe/* /var/www/html/
+    systemctl restart httpd
+    cd /tmp/
+    rm -rf /tmp/baristacafe
    SHELL
 end
